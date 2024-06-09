@@ -1,0 +1,4 @@
+﻿// tool - nugets package manager - package manager tools
+
+add-migration 
+update-database

@@ -1,0 +1,90 @@
+﻿@model List<GiviQiria.final.Models.DTO.GetCatToy>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>Table with Bootstrap</title>
+</head>
+<body>
+    <div class="container mt-5">
+        @{
+            var catID = ViewData["CatID"];
+           
+        }
+            <h1>@catID</h1>
+        <h2>Cat List</h2>
+        <a type="button" class="btn btn-white" style="border: 1px solid black;" href="/MainPage/Index" id="addNewCat">Go To Main Page</a>
+        <a type="button" class="btn btn-primary" href="/MainPage/AddNewToy/@catID" id="addNewCat">Add New Toy</a>
+        <button type="button" class="btn btn-danger " id="deleteBtn">Delete Selected</button>
+        <div class="table-responsive py-2">
+            <table class="table table-striped ">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" /></th>
+                        <th>Toy Name</th>
+                        <th>Weight</th>
+                        <th>Color</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="selectCheckbox" data-toyid="@item.ToyId" /></td>
+                                <td>@item.ToyName</td>
+                                <td>@item.Weight</td>
+                                <td style="background-color: @item.Color; width : " 20px"; height="20px"><div style=""></div></td>
+                                <td><a class="btn" style="border: 1px solid black;" href="/MainPage/UpdateCatToy/@item.ToyId" style="text-decoration :none">Update Cat Toy</a></td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="5">No Toy available.</td></tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#selectAll').click(function () {
+                $('.selectCheckbox').prop('checked', $(this).prop('checked'));
+            });
+
+            $('#deleteBtn').click(function () {
+                var selectedIds = [];
+                $('.selectCheckbox:checked').each(function () {
+                    selectedIds.push($(this).data('toyid')); 
+                });
+
+                $.ajax({
+                    url: '/MainPage/DeleteCatToy',
+                    type: 'DELETE',
+                    data: { ToyId: selectedIds },
+                    success: function (data) {
+                        window.location.reload();
+                     
+                    },
+                    error: function (xhr, status, error) {
+                     
+                        console.error('Error deleting toys:', error);
+                    }
+                });
+            });
+
+
+        });
+    </script>
+</body>
+</html>
